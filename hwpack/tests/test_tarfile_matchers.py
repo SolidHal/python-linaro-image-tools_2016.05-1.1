@@ -157,7 +157,7 @@ class TarfileHasFileTests(TestCase):
             matcher = TarfileHasFile("foo", mode=0000)
             mismatch = matcher.match(tf)
             self.assertValueMismatch(
-                mismatch, tf, "foo", "mode", 0000, 0644)
+                mismatch, tf, "foo", "mode", 0000, 0o644)
 
     def test_mismatches_wrong_linkname(self):
         with test_tarfile(contents=[("foo", "")]) as tf:
@@ -200,7 +200,7 @@ class TarfileHasFileTests(TestCase):
         with test_tarfile(contents=[("foo", "somecontent")]) as tf:
             matcher = TarfileHasFile("foo", content="othercontent")
             mismatch = matcher.match(tf)
-            self.assertEquals(
+            self.assertEqual(
                 "'othercontent' != 'somecontent': The content of "
                 "path \"foo\" did not match",
                 mismatch.describe())
@@ -210,7 +210,7 @@ class TarfileHasFileTests(TestCase):
             matcher = TarfileHasFile(
                 "foo", type=tarfile.DIRTYPE, content=["baz"])
             mismatch = matcher.match(tf)
-            self.assertEquals(
+            self.assertEqual(
                 "['baz'] != ['bar']: The content of "
                 "path \"foo\" did not match",
                 mismatch.describe())

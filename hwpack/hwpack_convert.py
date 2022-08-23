@@ -19,14 +19,14 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 # USA.
 
-import ConfigParser
+import configparser
 import logging
 import os
 import os.path
 import re
 import yaml
 
-from hwpack_fields import (
+from .hwpack_fields import (
     ARCHITECTURES_FIELD,
     ASSUME_INSTALLED_FIELD,
     BOOTLOADERS_FIELD,
@@ -136,7 +136,7 @@ class HwpackConverter(object):
     def _parse(self):
         """Parses the config file and stores its values."""
         if self.input_file is not None:
-            parser = ConfigParser.RawConfigParser()
+            parser = configparser.RawConfigParser()
             with open(self.input_file, 'r') as fp:
                 parser.readfp(fp)
 
@@ -280,13 +280,13 @@ class HwpackConverter(object):
             # dictionaries. In this case we only have list and normal values.
             nested_value = {}
             if self.bootloaders:
-                for key, value in self.bootloaders.iteritems():
+                for key, value in self.bootloaders.items():
                     nested_value[key] = value
             if self.extra_boot_options:
                 nested_value[EXTRA_BOOT_OPTIONS_FIELD] = \
                     self.extra_boot_options
             if self.spl:
-                for key, value in self.spl.iteritems():
+                for key, value in self.spl.items():
                     nested_value[key] = value
             default_bootloader = {DEFAULT_BOOTLOADER: nested_value}
             bootloaders = {BOOTLOADERS_FIELD: default_bootloader}

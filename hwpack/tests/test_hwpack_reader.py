@@ -18,7 +18,7 @@
 # along with Linaro Image Tools.  If not, see <http://www.gnu.org/licenses/>.
 
 import tarfile
-from StringIO import StringIO
+from io import StringIO
 from linaro_image_tools.testing import TestCaseWithFixtures
 from linaro_image_tools.tests.fixtures import (
     CreateTempDirFixture,

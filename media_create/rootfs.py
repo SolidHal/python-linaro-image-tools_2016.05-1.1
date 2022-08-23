@@ -56,8 +56,8 @@ def populate_rootfs(content_dir, root_disk, partition, rootfs_type,
       6. Add fstab entries for the / filesystem and swap (if created).
       7. Create a /etc/flash-kernel.conf containing the target's boot device.
     """
-    print "\nPopulating rootfs partition"
-    print "Be patient, this may take a few minutes\n"
+    print("\nPopulating rootfs partition")
+    print("Be patient, this may take a few minutes\n")
     # Create a directory to mount the rootfs partition.
     os.makedirs(root_disk)
 
@@ -68,7 +68,7 @@ def populate_rootfs(content_dir, root_disk, partition, rootfs_type,
         fstab_additions = ["%s / %s  %s 0 1" % (
             rootfs_id, rootfs_type, mount_options)]
         if should_create_swap:
-            print "\nCreating SWAP File\n"
+            print("\nCreating SWAP File\n")
             if has_space_left_for_swap(root_disk, swap_size):
                 proc = cmd_runner.run([
                     'dd',
@@ -89,12 +89,12 @@ def populate_rootfs(content_dir, root_disk, partition, rootfs_type,
 
         if os_release_id == 'debian' or os_release_id == 'ubuntu' or \
                 os.path.exists('%s/etc/debian_version' % root_disk):
-            print "\nCreating /etc/flash-kernel.conf\n"
+            print("\nCreating /etc/flash-kernel.conf\n")
             create_flash_kernel_config(
                 root_disk, mmc_device_id, 1 + partition_offset)
 
             if board_config is not None:
-                print "\nUpdating /etc/network/interfaces\n"
+                print("\nUpdating /etc/network/interfaces\n")
                 update_network_interfaces(root_disk, board_config)
 
 

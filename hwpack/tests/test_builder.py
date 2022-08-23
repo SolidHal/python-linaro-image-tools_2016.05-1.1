@@ -83,7 +83,7 @@ class PackageUnpackerTests(TestCaseWithFixtures):
         with PackageUnpacker() as package_unpacker:
             package_unpacker.unpack_package(package_file_name)
             package_dir = package_unpacker.get_path(package_file_name)
-        self.assertEquals(
+        self.assertEqual(
             ["tar -C %s -xf -" % package_dir,
              "dpkg --fsys-tarfile %s" % package_file_name],
             fixture.mock.commands_executed)
@@ -97,7 +97,7 @@ class PackageUnpackerTests(TestCaseWithFixtures):
             self.useFixture(MockSomethingFixture(
                 os.path, 'exists', lambda file: True))
             tempfile = package_unpacker.get_file(package, file)
-            self.assertEquals(tempfile,
+            self.assertEqual(tempfile,
                               os.path.join(package_unpacker.get_path(package),
                                            file))
 
@@ -124,7 +124,7 @@ class PackageUnpackerTests(TestCaseWithFixtures):
                 os.path, 'exists', lambda file: True))
             tempfile1 = package_unpacker.get_file(package1, file)
             tempfile2 = package_unpacker.get_file(package2, file)
-            self.assertNotEquals(tempfile1, tempfile2)
+            self.assertNotEqual(tempfile1, tempfile2)
 
 
 class HardwarePackBuilderTests(TestCaseWithFixtures):
@@ -183,10 +183,10 @@ class HardwarePackBuilderTests(TestCaseWithFixtures):
             'packages=%s\n'
             'architectures=%s\n'
             % (hwpack_name, ' '.join(packages), architecture))
-        for key, value in extra_config.iteritems():
+        for key, value in extra_config.items():
             config_text += '%s=%s\n' % (key, value)
         config_text += '\n'
-        for source_id, source in sources.iteritems():
+        for source_id, source in sources.items():
             config_text += '\n'
             config_text += '[%s]\n' % source_id
             config_text += 'sources-entry=%s\n' % source
@@ -207,7 +207,7 @@ class HardwarePackBuilderTests(TestCaseWithFixtures):
         builder = HardwarePackBuilder(config.filename, "1.0", [])
         found_package = builder.find_fetched_package(
             [available_package, wanted_package], wanted_package_name)
-        self.assertEquals(wanted_package, found_package)
+        self.assertEqual(wanted_package, found_package)
 
     def test_find_fetched_package_raises(self):
         package_name = "dummy-package"

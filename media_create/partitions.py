@@ -84,7 +84,7 @@ def setup_android_partitions(board_config, media, image_size, bootfs_label,
         data = partitions[3]
         sdcard = partitions[4]
 
-    print "\nFormating boot partition\n"
+    print("\nFormating boot partition\n")
     proc = cmd_runner.run(
         ['mkfs.vfat', '-F', str(board_config.fat_size), bootfs, '-n',
          bootfs_label],
@@ -92,7 +92,7 @@ def setup_android_partitions(board_config, media, image_size, bootfs_label,
     proc.wait()
 
     ext4_partitions = {"system": system, "cache": cache, "userdata": data}
-    for label, dev in ext4_partitions.iteritems():
+    for label, dev in ext4_partitions.items():
         mkfs = 'mkfs.%s' % "ext4"
         proc = cmd_runner.run(
             [mkfs, '-F', dev, '-L', label],
@@ -159,7 +159,7 @@ def setup_partitions(board_config, media, image_size, bootfs_label,
         bootfs, rootfs = get_boot_and_root_loopback_devices(media.path)
 
     if should_format_bootfs:
-        print "\nFormating boot partition\n"
+        print("\nFormating boot partition\n")
         mkfs = 'mkfs.%s' % board_config.bootfs_type
         if board_config.bootfs_type == 'vfat':
             proc = cmd_runner.run(
@@ -172,7 +172,7 @@ def setup_partitions(board_config, media, image_size, bootfs_label,
         proc.wait()
 
     if should_format_rootfs:
-        print "\nFormating root partition\n"
+        print("\nFormating root partition\n")
         mkfs = 'mkfs.%s' % rootfs_type
         proc = cmd_runner.run(
             [mkfs, '-F', rootfs, '-L', rootfs_label],
@@ -206,7 +206,7 @@ def partition_mounted(device, path, *args):
     finally:
         try:
             umount(path)
-        except cmd_runner.SubcommandNonZeroReturnValue, e:
+        except cmd_runner.SubcommandNonZeroReturnValue as e:
             logger.warn("Failed to umount %s, but ignoring it because of a "
                         "previous error" % path)
             logger.warn(e)
@@ -447,21 +447,21 @@ def _get_device_file_for_partition_number(device, partition):
             if partition_str:
                 return partition_str
             i += 1
-        except dbus.exceptions.DBusException, e:
+        except dbus.exceptions.DBusException as e:
             if time_to_sleep > MAX_TTS:
-                print "We've waited long enough..."
+                print("We've waited long enough...")
                 raise
-            print "*" * 60
-            print "UDisks doesn't know about %s: %s" % (dev_file, e)
+            print("*" * 60)
+            print("UDisks doesn't know about %s: %s" % (dev_file, e))
             bus = dbus.SystemBus()
             manager = dbus.Interface(
                 bus.get_object(UDISKS, "/org/freedesktop/UDisks"), UDISKS)
-            print "This is what UDisks know about: %s" % (
-                manager.EnumerateDevices())
-            print "Sleeping for %d seconds" % time_to_sleep
+            print("This is what UDisks know about: %s" % (
+                manager.EnumerateDevices()))
+            print("Sleeping for %d seconds" % time_to_sleep)
             time.sleep(time_to_sleep)
             time_to_sleep += 1
-            print "*" * 60
+            print("*" * 60)
     return None
 
 

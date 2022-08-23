@@ -66,7 +66,7 @@ class HardwarePackBuilder(object):
         try:
             with open(config_path) as fp:
                 self.config = Config(fp, allow_unset_bootloader=True)
-        except IOError, e:
+        except IOError as e:
             if e.errno == errno.ENOENT:
                 raise ConfigFileMissing(config_path)
             raise
@@ -109,7 +109,7 @@ class HardwarePackBuilder(object):
         :param bootloaders_config: The bootloaders dictionary to loop through.
         :return A list of packages, without duplicates."""
         boot_packages = []
-        for key, value in bootloaders_config.iteritems():
+        for key, value in bootloaders_config.items():
             if isinstance(value, dict):
                 boot_packages.extend(self.find_bootloader_packages(value))
             else:
@@ -174,7 +174,7 @@ class HardwarePackBuilder(object):
         """Find packages referenced by copy_files (single board, bootloader)"""
         copy_files = self.config.bootloader_copy_files
         if copy_files:
-            self.copy_files_packages.extend(copy_files.keys())
+            self.copy_files_packages.extend(list(copy_files.keys()))
 
     def find_copy_files_packages(self):
         """Find all packages referenced by copy_files sections in metadata."""
@@ -195,7 +195,7 @@ class HardwarePackBuilder(object):
             with LocalArchiveMaker() as local_archive_maker:
                 self.hwpack.add_apt_sources(sources)
                 if sources:
-                    sources = sources.values()
+                    sources = list(sources.values())
                 else:
                     sources = []
                 self.packages = self.config.packages[:]

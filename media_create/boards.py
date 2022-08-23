@@ -135,7 +135,7 @@ def copy_drop(src, dest_dir):
     final = os.path.join(dest_dir, os.path.basename(src))
     cmd = ["chown", "%s:%s" % (os.getuid(), os.getgid()), final]
     cmd_runner.run(cmd, as_root=True).wait()
-    os.chmod(final, 0644)
+    os.chmod(final, 0o644)
 
 
 class BoardException(Exception):
@@ -695,7 +695,7 @@ class BoardConfig(object):
         for dtb_file in dtb_files:
             if dtb_file:
                 if isinstance(dtb_file, dict):
-                    for key, value in dtb_file.iteritems():
+                    for key, value in dtb_file.items():
                         # The name of the dtb file in the new position.
                         to_file = os.path.basename(key)
                         # The directory where to copy the dtb file.
@@ -862,9 +862,9 @@ class BoardConfig(object):
             return
 
         for source_package, file_list in \
-                self.bootloader_copy_files.iteritems():
+                self.bootloader_copy_files.items():
             for file_info in file_list:
-                for source_path, dest_path in file_info.iteritems():
+                for source_path, dest_path in file_info.items():
                     source = self.hardwarepack_handler.get_file_from_package(
                         source_path, source_package)
                     dest_path = dest_path.lstrip("/\\")
@@ -929,7 +929,7 @@ class BoardConfig(object):
             dtb_file = self.dtb_files[0]
             if dtb_file:
                 if isinstance(dtb_file, dict):
-                    for key, value in dtb_file.iteritems():
+                    for key, value in dtb_file.items():
                         # The name of the dtb file.
                         to_file = os.path.basename(key)
                         from_file = value
@@ -971,7 +971,7 @@ class BoardConfig(object):
         """Returns dictionary entry from dt_files containing dtb file."""
         for dtb_file in self.dtb_files:
             if isinstance(dtb_file, dict):
-                for key, value in dtb_file.iteritems():
+                for key, value in dtb_file.items():
                     # The name of the dtb file.
                     if dtb in key:
                         return dtb_file
@@ -1338,7 +1338,7 @@ class SnowballEmmcConfig(SnowballSdConfig):
                     filename = os.path.join(config_files_dir, file_data[1])
                 assert os.path.exists(filename), "File %s does not exist, " \
                     "please check the startfiles config file." % file_data[1]
-                address = long(file_data[3], 16)
+                address = int(file_data[3], 16)
                 if address != 0:
                     ofs = address
                 size = os.path.getsize(filename)
@@ -2145,7 +2145,7 @@ def make_boot_script(boot_env, boot_script_path):
 
 
 def make_flashable_env(boot_env, env_size):
-    env_strings = ["%s=%s" % (k, v) for k, v in boot_env.items()]
+    env_strings = ["%s=%s" % (k, v) for k, v in list(boot_env.items())]
     env_strings.sort()
     env = struct.pack('B', 0).join(env_strings)
 

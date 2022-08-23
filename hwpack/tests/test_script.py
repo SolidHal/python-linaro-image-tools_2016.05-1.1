@@ -35,7 +35,7 @@ from linaro_image_tools.hwpack.config import Config
 from linaro_image_tools.testing import TestCaseWithFixtures
 from linaro_image_tools.utils import find_command
 import os
-from StringIO import StringIO
+from io import StringIO
 
 
 class ScriptTests(TestCaseWithFixtures):

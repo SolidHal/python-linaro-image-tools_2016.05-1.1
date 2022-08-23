@@ -20,7 +20,7 @@
 # USA.
 
 from contextlib import contextmanager
-from StringIO import StringIO
+from io import StringIO
 import tarfile
 
 from testtools import TestCase
@@ -84,7 +84,7 @@ class TarFileTests(TestCase):
     def test_create_file_from_string_sets_mode(self):
         backing_file = self.create_simple_tarball([("foo", "bar")])
         with standard_tarfile(backing_file) as tf:
-            self.assertEqual(0644, tf.getmember("foo").mode)
+            self.assertEqual(0o644, tf.getmember("foo").mode)
 
     def test_create_file_from_string_sets_type(self):
         backing_file = self.create_simple_tarball([("foo", "bar")])
@@ -154,7 +154,7 @@ class TarFileTests(TestCase):
     def test_create_dir_sets_mode(self):
         backing_file = self.create_simple_tarball([("foo/", "")])
         with standard_tarfile(backing_file) as tf:
-            self.assertEqual(0755, tf.getmember("foo").mode)
+            self.assertEqual(0o755, tf.getmember("foo").mode)
 
     def test_create_dir_sets_linkname(self):
         backing_file = self.create_simple_tarball([("foo/", "")])

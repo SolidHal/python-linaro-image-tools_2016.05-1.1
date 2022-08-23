@@ -221,14 +221,14 @@ def install_package_providing(command):
             "Unable to find any package to be installed.")
 
     try:
-        print ("In order to use the '%s' command, the following package/s "
-               "have to be installed: %s" % (command, " ".join(to_install)))
-        resp = raw_input("Install? (Y/n) ")
+        print(("In order to use the '%s' command, the following package/s "
+               "have to be installed: %s" % (command, " ".join(to_install))))
+        resp = input("Install? (Y/n) ")
         if resp.lower() != 'y':
-            print "Package installation is necessary to continue. Exiting."
+            print("Package installation is necessary to continue. Exiting.")
             sys.exit(1)
-        print ("Installing required command '%s' from package '%s'..."
-               % (command, package))
+        print(("Installing required command '%s' from package '%s'..."
+               % (command, package)))
         cmd_runner.run(['apt-get', '--yes', 'install', package],
                        as_root=True).wait()
     except EOFError:
@@ -276,7 +276,7 @@ def find_command(name, prefer_dir=None):
     if os.path.isabs(__file__):
         dirs = os.environ["PATH"].split(os.pathsep)
         # empty dir in PATH means current directory
-        dirs = map(lambda x: x == '' and '.' or x, dirs)
+        dirs = [x == '' and '.' or x for x in dirs]
 
     if prefer_dir is not None:
         dirs.insert(0, prefer_dir)

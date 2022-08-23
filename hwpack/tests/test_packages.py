@@ -22,7 +22,7 @@
 import os
 import re
 import shutil
-from StringIO import StringIO
+from io import StringIO
 import subprocess
 import tempfile
 import textwrap
@@ -367,7 +367,7 @@ class PackageMakerTests(TestCaseWithFixtures):
         deb_path = maker.make_package(
             'foo', '1.0', fields)
         deb_pkg = DebFile(deb_path)
-        for key, value in fields.items():
+        for key, value in list(fields.items()):
             self.assertEqual(
                 value, deb_pkg.control.debcontrol()[key])
 
@@ -791,7 +791,7 @@ class FetchedPackageTests(TestCaseWithFixtures):
         self.useFixture(ContextManagerFixture(maker))
         deb_file_path = maker.make_package('foo', '1.0', relationships)
         dummy_relationships = {}
-        for relationship, value in relationships.items():
+        for relationship, value in list(relationships.items()):
             dummy_relationships[relationship.lower().replace('-', '_')] = value
         target_package = DummyFetchedPackage(
             "foo", "1.0", content=open(deb_file_path).read(),

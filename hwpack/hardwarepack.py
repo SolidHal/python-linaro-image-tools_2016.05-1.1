@@ -21,7 +21,7 @@
 
 import time
 import os
-import urlparse
+import urllib.parse
 
 from linaro_image_tools.hwpack.better_tarfile import writeable_tarfile
 from linaro_image_tools.hwpack.packages import (
@@ -36,7 +36,7 @@ from linaro_image_tools.hwpack.hwpack_convert import (
     dump,
 )
 
-from hwpack_fields import (
+from .hwpack_fields import (
     BOARDS_FIELD,
     BOOTLOADERS_FIELD,
     BOOT_MIN_SIZE_FIELD,
@@ -583,8 +583,8 @@ class HardwarePack(object):
                     [p for p in self.packages if p.content is not None]))
             tf.create_dir(self.SOURCES_LIST_DIRNAME)
 
-            for source_name, source_info in self.sources.items():
-                url_parsed = urlparse.urlsplit(source_info)
+            for source_name, source_info in list(self.sources.items()):
+                url_parsed = urllib.parse.urlsplit(source_info)
 
                 # Don't output sources with passwords in them
                 if not url_parsed.password:

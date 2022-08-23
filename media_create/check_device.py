@@ -68,7 +68,7 @@ def _does_device_exist(path):
 def _print_devices():
     """Print disk devices found on the system."""
     bus, udisks = _get_system_bus_and_udisks_iface()
-    print '%-16s %-16s %s' % ('Device', 'Mount point', 'Size')
+    print('%-16s %-16s %s' % ('Device', 'Mount point', 'Size'))
     devices = udisks.get_dbus_method('EnumerateDevices')()
     devices.sort()
     for path in devices:
@@ -82,12 +82,12 @@ def _print_devices():
 
         if _get_dbus_property('DeviceIsPartition', device, path):
             part_size = _get_dbus_property('partition-size', device, path)
-            print '%-16s %-16s %dMB' % (
-                device_file, mount_point, part_size / 1024 ** 2)
+            print('%-16s %-16s %dMB' % (
+                device_file, mount_point, part_size / 1024 ** 2))
         else:
             device_size = _get_dbus_property('device-size', device, path)
-            print '%-16s %-16s %dMB' % (
-                device_file, mount_point, device_size / 1024 ** 2)
+            print('%-16s %-16s %dMB' % (
+                device_file, mount_point, device_size / 1024 ** 2))
 
 
 def _select_device(device):
@@ -96,7 +96,7 @@ def _select_device(device):
     :param device: Device path.
     :return: True if the user confirms the selection, else False.
     """
-    resp = raw_input('Are you 100%% sure, on selecting [%s] (y/n)? ' % device)
+    resp = input('Are you 100%% sure, on selecting [%s] (y/n)? ' % device)
     if resp.lower() != 'y':
         return False
     return True
@@ -123,13 +123,13 @@ def confirm_device_selection_and_ensure_it_is_ready(
     :return: True if the device exist and is selected, else False.
     """
     if _does_device_exist(device):
-        print '\nI see...'
+        print('\nI see...')
         _print_devices()
         if yes_to_mmc_selection or _select_device(device):
             _ensure_device_partitions_not_mounted(device)
             return True
     else:
-        print '\nAre you sure? I do not see [%s].' % device
-        print 'Here is what I see...'
+        print('\nAre you sure? I do not see [%s].' % device)
+        print('Here is what I see...')
         _print_devices()
     return False

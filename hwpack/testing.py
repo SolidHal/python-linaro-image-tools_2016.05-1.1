@@ -26,7 +26,7 @@ import os
 import shutil
 import subprocess
 import tempfile
-from StringIO import StringIO
+from io import StringIO
 import tarfile
 import time
 
@@ -323,9 +323,9 @@ class HardwarePackHasFile(TarfileHasFile):
         if "content" in kwargs and kwargs['type'] != tarfile.DIRTYPE:
             kwargs.setdefault("size", len(kwargs["content"]))
         if kwargs["type"] == tarfile.DIRTYPE:
-            kwargs.setdefault("mode", 0755)
+            kwargs.setdefault("mode", 0o755)
         else:
-            kwargs.setdefault("mode", 0644)
+            kwargs.setdefault("mode", 0o644)
         kwargs.setdefault("linkname", "")
         kwargs.setdefault("uid", 1000)
         kwargs.setdefault("gid", 1000)
@@ -368,7 +368,7 @@ class IsHardwarePack(Matcher):
                     "manifest",
                     content_matcher=AfterPreproccessing(
                         str.splitlines,
-                        MatchesSetwise(*map(Equals, manifest_lines)))))
+                        MatchesSetwise(*list(map(Equals, manifest_lines))))))
             matchers.append(HardwarePackHasFile("pkgs", type=tarfile.DIRTYPE))
             packages_with_content = [p for p in self.packages
                                      if p not in self.packages_without_content]
@@ -397,7 +397,7 @@ class IsHardwarePack(Matcher):
                     *package_matchers)))
             matchers.append(HardwarePackHasFile(
                 "sources.list.d", type=tarfile.DIRTYPE))
-            for source_id, sources_entry in self.sources.items():
+            for source_id, sources_entry in list(self.sources.items()):
                 matchers.append(HardwarePackHasFile(
                     "sources.list.d/%s.list" % source_id,
                     content="deb " + sources_entry + "\n"))
@@ -459,7 +459,7 @@ class MatchesStructure(object):
 
     def update(self, **kws):
         new_kws = self.kws.copy()
-        for attr, matcher in kws.iteritems():
+        for attr, matcher in kws.items():
             if matcher is None:
                 new_kws.pop(attr, None)
             else:
@@ -469,7 +469,7 @@ class MatchesStructure(object):
     def match(self, value):
         matchers = []
         values = []
-        for attr, matcher in self.kws.iteritems():
+        for attr, matcher in self.kws.items():
             matchers.append(Annotate(attr, matcher))
             values.append(getattr(value, attr))
         return EachOf(matchers).match(values)
@@ -561,7 +561,7 @@ def parse_packages_file_content(file_content):
     packages = []
     for para in Packages.iter_paragraphs(StringIO(file_content)):
         args = {}
-        for key, value in para.iteritems():
+        for key, value in para.items():
             key = key.lower()
             if key == 'md5sum':
                 key = 'md5'

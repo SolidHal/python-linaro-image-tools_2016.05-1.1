@@ -117,12 +117,12 @@ class Hwpack(object):
         string += LINE_SEP
 
         if self.boards:
-            for key, value in self.boards.iteritems():
+            for key, value in self.boards.items():
                 if value.get(BOOTLOADERS_FIELD, None) is not None:
                     bootloaders = value.get(BOOTLOADERS_FIELD)
-                    supported_bootloaders = bootloaders.keys()
+                    supported_bootloaders = list(bootloaders.keys())
                 else:
-                    supported_bootloaders = self.bootloaders.keys()
+                    supported_bootloaders = list(self.bootloaders.keys())
                 string += ELEMENT_FORMAT.format(
                     key, ",".join(supported_bootloaders))
                 string += LINE_SEP
@@ -130,7 +130,7 @@ class Hwpack(object):
             # If we pass a converted file with just a single board, we do not
             # have the boards section, and we default to the name of the hwpack
             if self.bootloaders:
-                supported_bootloaders = self.bootloaders.keys()
+                supported_bootloaders = list(self.bootloaders.keys())
                 string += ELEMENT_FORMAT.format(
                     self.name, ",".join(supported_bootloaders))
                 string += LINE_SEP

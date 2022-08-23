@@ -20,7 +20,7 @@
 import os
 import shutil
 import tempfile
-from StringIO import StringIO
+from io import StringIO
 
 from linaro_image_tools import cmd_runner
 
@@ -107,7 +107,7 @@ class MockCmdRunnerPopen(object):
         self.child_finished = False
         if self.calls is None:
             self.calls = []
-        if isinstance(cmd, basestring):
+        if isinstance(cmd, str):
             all_args = [cmd]
         else:
             all_args = cmd

@@ -20,7 +20,7 @@
 # USA.
 
 from contextlib import contextmanager
-from StringIO import StringIO
+from io import StringIO
 from tarfile import DIRTYPE, TarFile as StandardTarFile, TarInfo
 
 """Improvements to the standard library's tarfile module.
@@ -114,6 +114,6 @@ class TarFile(StandardTarFile):
         """
         tarinfo = TarInfo(name=path)
         tarinfo.type = DIRTYPE
-        tarinfo.mode = 0755
+        tarinfo.mode = 0o755
         self._set_defaults(tarinfo)
         self.addfile(tarinfo)

@@ -19,7 +19,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 # USA.
 
-import ConfigParser
+import configparser
 from operator import attrgetter
 import os
 import re
@@ -32,7 +32,7 @@ from linaro_image_tools.hwpack.hardwarepack_format import (
     HardwarePackFormatV3,
 )
 
-from hwpack_fields import (
+from .hwpack_fields import (
     ARCHITECTURES_FIELD,
     ARCHITECTURE_FIELD,
     ASSUME_INSTALLED_FIELD,
@@ -166,9 +166,9 @@ class Config(object):
         obfuscated_e = None
         obfuscated_yaml_e = ""
         try:
-            self.parser = ConfigParser.RawConfigParser()
+            self.parser = configparser.RawConfigParser()
             self.parser.readfp(fp)
-        except ConfigParser.Error, e:
+        except configparser.Error as e:
             obfuscated_e = re.sub(r"([^ ]https://).+?(@)", r"\1***\2", str(e))
 
         if obfuscated_e:
@@ -178,7 +178,7 @@ class Config(object):
             try:
                 fp.seek(0)
                 self.parser = yaml.safe_load(fp)
-            except yaml.YAMLError, e:
+            except yaml.YAMLError as e:
                 obfuscated_yaml_e = re.sub(r"([^ ]https://).+?(@)",
                                            r"\1***\2", str(e))
             else:
@@ -193,7 +193,7 @@ class Config(object):
                    obfuscated_e + "\n" +
                    "YAML parser error:\n" +
                    obfuscated_yaml_e)
-            raise ConfigParser.Error(msg)
+            raise configparser.Error(msg)
 
     def _get_bootloader(self):
         """Returns the bootloader associated with this config.
@@ -207,7 +207,7 @@ class Config(object):
             bootloaders = self.bootloaders
             if isinstance(bootloaders, dict):
                 # We have a list of bootloaders in the expected format
-                bootloaders = bootloaders.keys()
+                bootloaders = list(bootloaders.keys())
                 bootloader = bootloaders[0]
                 if len(bootloaders) > 1:
                     # We have more than one bootloader, use 'u_boot'.
@@ -239,7 +239,7 @@ class Config(object):
     def get_bootloader_list(self):
         if isinstance(self.bootloaders, dict):
             # We have a list of bootloaders in the expected format
-            return self.bootloaders.keys()
+            return list(self.bootloaders.keys())
         return []
 
     def validate_bootloader_fields(self):
@@ -258,7 +258,7 @@ class Config(object):
 
         :raises HwpackConfigError: if it does not.
         """
-        if isinstance(self.parser, ConfigParser.RawConfigParser):
+        if isinstance(self.parser, configparser.RawConfigParser):
             if not self.parser.has_section(self.MAIN_SECTION):
                 raise HwpackConfigError("No [%s] section" % self.MAIN_SECTION)
         self._validate_keys()
@@ -313,11 +313,11 @@ class Config(object):
     def format(self):
         """The format of the hardware pack. A subclass of HardwarePackFormat.
         """
-        if isinstance(self.parser, ConfigParser.RawConfigParser):
+        if isinstance(self.parser, configparser.RawConfigParser):
             try:
                 format_string = self.parser.get(self.MAIN_SECTION,
                                                 FORMAT_FIELD)
-            except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+            except (configparser.NoOptionError, configparser.NoSectionError):
                 # Default to 1.0 to aviod breaking existing hwpack files.
                 # When this code no longer supports 1.0, it effectively makes
                 # explicitly specifying format in hwpack files mandatory.
@@ -355,7 +355,7 @@ class Config(object):
             except ValueError as e:
                 raise HwpackConfigError("Invalid value for include-debs: %s" %
                                         e)
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             return True
 
     @property
@@ -417,10 +417,10 @@ class Config(object):
                     dest_path = "/boot"
                     source_path = value
                 else:
-                    if len(value.keys()) > 1:
+                    if len(list(value.keys())) > 1:
                         raise HwpackConfigError("copy_files entry found with"
                                                 "more than one destination")
-                    source_path = value.keys()[0]
+                    source_path = list(value.keys())[0]
                     dest_path = value[source_path]
 
                 if not dest_path.startswith("/boot"):
@@ -459,7 +459,7 @@ class Config(object):
         else:
             try:
                 return self.parser.getboolean(self.MAIN_SECTION, key)
-            except ConfigParser.NoOptionError:
+            except configparser.NoOptionError:
                 return None
 
     def _get_bootloader_option(self, key, join_list_with=False,
@@ -588,7 +588,7 @@ class Config(object):
         else:
             try:
                 result = self.parser.get(self.MAIN_SECTION, key)
-            except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+            except (configparser.NoOptionError, configparser.NoSectionError):
                 # May be trying to read a metadata file, which has uppercase
                 # keys, some of which need translating to different strings...
                 if key in self.translate_v2_metadata:
@@ -597,8 +597,8 @@ class Config(object):
                     key = key.upper()
                 try:
                     result = self.parser.get(self.MAIN_SECTION, key)
-                except (ConfigParser.NoOptionError,
-                        ConfigParser.NoSectionError):
+                except (configparser.NoOptionError,
+                        configparser.NoSectionError):
                     result = None
             if not result:
                 result = None
@@ -966,7 +966,7 @@ class Config(object):
                 raise HwpackConfigError("Empty value for name")
             self._assert_matches_pattern(
                 self.NAME_REGEX, name, "Invalid name: %s" % name)
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             raise HwpackConfigError(
                 "No name in the [%s] section" % self.MAIN_SECTION)
 
@@ -1012,7 +1012,7 @@ class Config(object):
         dtb_files = self.dtb_files
         if dtb_files:
             for dtb_file in dtb_files:
-                for _, src in dtb_file.iteritems():
+                for _, src in dtb_file.items():
                     self._check_single_dtb_file(src)
 
     def _check_single_dtb_file(self, dtb_file):
@@ -1360,7 +1360,7 @@ class Config(object):
             try:
                 sources_entry = self.parser.get(
                     section_name, self.SOURCES_ENTRY_KEY)
-            except ConfigParser.NoOptionError:
+            except configparser.NoOptionError:
                 raise HwpackConfigError(
                     "No %s in the [%s] section"
                     % (self.SOURCES_ENTRY_KEY, section_name))
@@ -1384,7 +1384,7 @@ class Config(object):
             if not source_dict:
                 return
             if isinstance(source_dict, dict):
-                sources = source_dict.keys()
+                sources = list(source_dict.keys())
             else:
                 raise HwpackConfigError(
                     "The %s in the [%s] section is missing the URI"
@@ -1427,9 +1427,9 @@ class Config(object):
                                     "key: value pairs, found: '%s'" %
                                     (prefix + str(config)))
 
-        for key in config.keys():
+        for key in list(config.keys()):
             # If expected == {"*": {...}} then we can accept any key
-            if("*" in expected and expected.keys() == ["*"] and
+            if("*" in expected and list(expected.keys()) == ["*"] and
                isinstance(expected["*"], dict)):
                 # Have found a sub-dictionary to check. Recurse.
                 self._do_validate_keys(expected["*"], config[key], key)
@@ -1451,7 +1451,7 @@ class Config(object):
                 config = config[key]
                 prefix = self._do_validate_keys_push_prefix(key)
 
-                for key in config.keys():
+                for key in list(config.keys()):
                     self._do_validate_keys(self._validate_keys_layout,
                                            config[key], key)
 

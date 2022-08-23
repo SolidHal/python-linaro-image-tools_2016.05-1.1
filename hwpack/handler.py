@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Linaro Image Tools.  If not, see <http://www.gnu.org/licenses/>.
 
-from StringIO import StringIO
-import ConfigParser
+from io import StringIO
+import configparser
 import logging
 import os
 import re
@@ -126,7 +126,7 @@ class HardwarepackHandler(object):
                     hwpack_with_data = hwpack_tarfile
                     if return_keys:
                         keys = parser.get_last_used_keys()
-            except ConfigParser.NoOptionError:
+            except configparser.NoOptionError:
                 continue
 
         if return_keys:

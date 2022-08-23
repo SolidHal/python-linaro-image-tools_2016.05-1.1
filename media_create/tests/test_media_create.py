@@ -34,7 +34,7 @@ import dbus
 import shutil
 
 from mock import MagicMock
-from StringIO import StringIO
+from io import StringIO
 from testtools import TestCase
 
 from linaro_image_tools import cmd_runner
@@ -154,7 +154,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             [('FORMAT', format), ('metadata', metadata)])
         hp = HardwarepackHandler([tarball], bootloader='u_boot')
         with hp:
-            self.assertEquals(hp.get_field('bootloader_file')[0], 'a_file')
+            self.assertEqual(hp.get_field('bootloader_file')[0], 'a_file')
 
     def test_hardwarepack_boards(self):
         metadata = ("format: 3.0\nname: ahwpack\nversion: 4\narchitecture: "
@@ -169,7 +169,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             [('FORMAT', format), ('metadata', metadata)])
         hp = HardwarepackHandler([tarball], board='panda')
         with hp:
-            self.assertEquals(hp.get_field('bootloader_file')[0], 'panda_file')
+            self.assertEqual(hp.get_field('bootloader_file')[0], 'panda_file')
 
     def test_hardwarepack_boards_and_bootloaders(self):
         metadata = ("format: 3.0\nname: ahwpack\nversion: 4\narchitecture: "
@@ -187,7 +187,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             [('FORMAT', format), ('metadata', metadata)])
         hp = HardwarepackHandler([tarball], board='panda', bootloader='uefi')
         with hp:
-            self.assertEquals(hp.get_field('bootloader_file')[0],
+            self.assertEqual(hp.get_field('bootloader_file')[0],
                               'uefi_panda_file')
 
     def add_to_tarball(self, files, tarball=None):
@@ -208,7 +208,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             [('FORMAT', format), ('metadata', self.metadata)])
         hp = HardwarepackHandler([tarball])
         with hp:
-            self.assertEquals(hp.get_format(), data)
+            self.assertEqual(hp.get_format(), data)
 
     def test_get_format_2(self):
         data = '2.0'
@@ -217,7 +217,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             [('FORMAT', format), ('metadata', self.metadata)])
         hp = HardwarepackHandler([tarball])
         with hp:
-            self.assertEquals(hp.get_format(), data)
+            self.assertEqual(hp.get_format(), data)
 
     def test_get_unknown_format_raises(self):
         data = '9.9'
@@ -243,7 +243,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             tarball=tarball_fixture2.get_tarball())
         hp = HardwarepackHandler([tarball2, tarball1])
         with hp:
-            self.assertEquals(hp.get_format(), '1.0and2.0')
+            self.assertEqual(hp.get_format(), '1.0and2.0')
 
     def test_identical_formats_ok(self):
         format1 = "%s\n" % HardwarepackHandler.FORMAT_2
@@ -260,7 +260,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
             tarball=tarball_fixture2.get_tarball())
         hp = HardwarepackHandler([tarball1, tarball2])
         with hp:
-            self.assertEquals(hp.get_format(), '2.0')
+            self.assertEqual(hp.get_format(), '2.0')
 
     def test_get_metadata(self):
         data = 'data to test'
@@ -308,7 +308,7 @@ class TestHardwarepackHandler(TestCaseWithFixtures):
         hp = HardwarepackHandler([tarball])
         with hp:
             test_file = hp.get_file('bootloader_file')
-            self.assertEquals(data, open(test_file, 'r').read())
+            self.assertEqual(data, open(test_file, 'r').read())
 
     def test_list_packages(self):
         metadata = ("format: 3.0\nname: ahwpack\nversion: 4\narchitecture: "
@@ -429,7 +429,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(None, board_conf.kernel_addr)
+        self.assertEqual(None, board_conf.kernel_addr)
 
     def test_sets_kernel_addr(self):
         self.useFixture(MockSomethingFixture(
@@ -443,7 +443,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.kernel_addr)
+        self.assertEqual(data_to_set, board_conf.kernel_addr)
 
     def test_sets_initrd_addr(self):
         self.useFixture(MockSomethingFixture(
@@ -457,7 +457,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.initrd_addr)
+        self.assertEqual(data_to_set, board_conf.initrd_addr)
 
     def test_sets_load_addr(self):
         self.useFixture(MockSomethingFixture(
@@ -471,7 +471,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.load_addr)
+        self.assertEqual(data_to_set, board_conf.load_addr)
 
     def test_sets_serial_tty(self):
         self.useFixture(MockSomethingFixture(
@@ -485,7 +485,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.serial_tty)
+        self.assertEqual(data_to_set, board_conf.serial_tty)
 
     def test_sets_wired_interfaces(self):
         self.useFixture(MockSomethingFixture(
@@ -499,7 +499,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.wired_interfaces)
+        self.assertEqual(data_to_set, board_conf.wired_interfaces)
 
     def test_sets_wireless_interfaces(self):
         self.useFixture(MockSomethingFixture(
@@ -513,7 +513,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.wireless_interfaces)
+        self.assertEqual(data_to_set, board_conf.wireless_interfaces)
 
     def test_sets_mmc_id(self):
         self.useFixture(MockSomethingFixture(
@@ -527,9 +527,9 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.mmc_option)
-        self.assertEquals(0, board_conf.mmc_device_id)
-        self.assertEquals(0, board_conf.mmc_part_offset)
+        self.assertEqual(data_to_set, board_conf.mmc_option)
+        self.assertEqual(0, board_conf.mmc_device_id)
+        self.assertEqual(0, board_conf.mmc_part_offset)
 
     def test_sets_boot_min_size(self):
         self.useFixture(MockSomethingFixture(
@@ -545,7 +545,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(expected, board_conf.BOOT_MIN_SIZE_S)
+        self.assertEqual(expected, board_conf.BOOT_MIN_SIZE_S)
 
     def test_sets_root_min_size(self):
         self.useFixture(MockSomethingFixture(
@@ -561,7 +561,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(expected, board_conf.ROOT_MIN_SIZE_S)
+        self.assertEqual(expected, board_conf.ROOT_MIN_SIZE_S)
 
     def test_sets_loader_min_size(self):
         self.useFixture(MockSomethingFixture(
@@ -577,7 +577,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(expected, board_conf.LOADER_MIN_SIZE_S)
+        self.assertEqual(expected, board_conf.LOADER_MIN_SIZE_S)
 
     def test_sets_partition_layout_32(self):
         self.useFixture(MockSomethingFixture(
@@ -591,7 +591,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(32, board_conf.fat_size)
+        self.assertEqual(32, board_conf.fat_size)
 
     def test_sets_partition_layout_16(self):
         self.useFixture(MockSomethingFixture(
@@ -605,7 +605,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(16, board_conf.fat_size)
+        self.assertEqual(16, board_conf.fat_size)
 
     def test_sets_partition_layout_raises(self):
         self.useFixture(MockSomethingFixture(
@@ -635,7 +635,7 @@ class TestSetMetadata(TestCaseWithFixtures):
 
         board_conf = BoardConfig()
         board_conf.set_metadata('ahwpack.tar.gz')
-        self.assertEquals(data_to_set, board_conf.bootloader_copy_files)
+        self.assertEqual(data_to_set, board_conf.bootloader_copy_files)
 
 
 class TestGetMLOFile(TestCaseWithFixtures):
@@ -647,7 +647,7 @@ class TestGetMLOFile(TestCaseWithFixtures):
         os.makedirs(path)
         mlo_path = os.path.join(path, 'MLO')
         open(mlo_path, 'w').close()
-        self.assertEquals(
+        self.assertEqual(
             mlo_path, _get_mlo_file(tempdir))
 
     def test_mlo_from_old_xloader(self):
@@ -656,7 +656,7 @@ class TestGetMLOFile(TestCaseWithFixtures):
         os.makedirs(path)
         mlo_path = os.path.join(path, 'MLO')
         open(mlo_path, 'w').close()
-        self.assertEquals(
+        self.assertEqual(
             mlo_path, _get_mlo_file(tempdir))
 
     def test_no_mlo_found(self):
@@ -697,14 +697,14 @@ class TestGetSMDKSPL(TestCaseWithFixtures):
         path = _create_uboot_dir(tempdir, self.config.bootloader_flavor)
         spl_path = os.path.join(path, 'v310_mmc_spl.bin')
         open(spl_path, 'w').close()
-        self.assertEquals(spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(spl_path, self.config._get_samsung_spl(tempdir))
 
     def test_new_file_present(self):
         tempdir = self.useFixture(CreateTempDirFixture()).get_temp_dir()
         path = _create_uboot_dir(tempdir, self.config.bootloader_flavor)
         spl_path = os.path.join(path, 'u-boot-mmc-spl.bin')
         open(spl_path, 'w').close()
-        self.assertEquals(spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(spl_path, self.config._get_samsung_spl(tempdir))
 
     def test_prefers_old_path(self):
         tempdir = self.useFixture(CreateTempDirFixture()).get_temp_dir()
@@ -713,7 +713,7 @@ class TestGetSMDKSPL(TestCaseWithFixtures):
         new_spl_path = os.path.join(path, 'u-boot-mmc-spl.bin')
         open(old_spl_path, 'w').close()
         open(new_spl_path, 'w').close()
-        self.assertEquals(old_spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(old_spl_path, self.config._get_samsung_spl(tempdir))
 
 
 class TestGetSMDKUboot(TestCaseWithFixtures):
@@ -726,7 +726,7 @@ class TestGetSMDKUboot(TestCaseWithFixtures):
         chroot_dir = "chroot"
         uboot_file = os.path.join(chroot_dir, 'usr', 'lib', 'u-boot',
                                   self.config.bootloader_flavor, 'u-boot.bin')
-        self.assertEquals(
+        self.assertEqual(
             uboot_file, self.config._get_samsung_bootloader(chroot_dir))
 
 
@@ -746,7 +746,7 @@ class TestGetOrigenSPL(TestCaseWithFixtures):
         path = _create_uboot_dir(tempdir, self.config.bootloader_flavor)
         spl_path = os.path.join(path, 'u-boot-mmc-spl.bin')
         open(spl_path, 'w').close()
-        self.assertEquals(spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(spl_path, self.config._get_samsung_spl(tempdir))
 
 
 class TestGetOrigenUboot(TestGetSMDKUboot):
@@ -772,7 +772,7 @@ class TestGetOrigenQuadSPL(TestCaseWithFixtures):
         path = _create_uboot_dir(tempdir, self.config.bootloader_flavor)
         spl_path = os.path.join(path, 'origen_quad-spl.bin')
         open(spl_path, 'w').close()
-        self.assertEquals(spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(spl_path, self.config._get_samsung_spl(tempdir))
 
 
 class TestGetOrigenQuadUboot(TestGetSMDKUboot):
@@ -798,7 +798,7 @@ class TestGetArndaleSPL(TestCaseWithFixtures):
         path = _create_uboot_dir(tempdir, self.config.bootloader_flavor)
         spl_path = os.path.join(path, 'smdk5250-spl.bin')
         open(spl_path, 'w').close()
-        self.assertEquals(spl_path, self.config._get_samsung_spl(tempdir))
+        self.assertEqual(spl_path, self.config._get_samsung_spl(tempdir))
 
 
 class TestGetArndaleUboot(TestGetSMDKUboot):
@@ -903,9 +903,9 @@ class TestCreateToc(TestCaseWithFixtures):
             self.board_conf.create_toc(f, files)
         with open(filename, 'r') as f:
             actual = f.read()
-        self.assertEquals(96, len(actual))
+        self.assertEqual(96, len(actual))
         for i in range(len(actual)):
-            self.assertEquals(
+            self.assertEqual(
                 self.expected[i], actual[i], 'Mismatch at ix'
                 ' %d, ref=%c, actual=%c' % (i, self.expected[i], actual[i]))
 
@@ -1000,7 +1000,7 @@ class TestSnowballBootFiles(TestCaseWithFixtures):
                              'filename': filename,
                              'align': int(line[2]),
                              'offset': ofs[i],
-                             'size': long(size[i]),
+                             'size': int(size[i]),
                              'load_adress': line[4]})
             i += 1
         return expected
@@ -1017,7 +1017,7 @@ class TestSnowballBootFiles(TestCaseWithFixtures):
         with open(os.path.join(self.temp_bootdir_path, uboot_file), 'w') as f:
             file_info = self.snowball_config.get_file_info(
                 self.tempdir, self.temp_bootdir_path)
-        self.assertEquals(file_info[0]['filename'],
+        self.assertEqual(file_info[0]['filename'],
                           os.path.join(self.temp_bootdir_path, uboot_file))
 
     def test_get_file_info_abs_path(self):
@@ -1034,7 +1034,7 @@ class TestSnowballBootFiles(TestCaseWithFixtures):
         with open(uboot_file, 'w') as f:
             file_info = self.snowball_config.get_file_info(
                 self.tempdir, self.temp_bootdir_path)
-        self.assertEquals(file_info[0]['filename'], uboot_file)
+        self.assertEqual(file_info[0]['filename'], uboot_file)
 
     def test_get_file_info_raises(self):
         # Create a config file
@@ -1055,7 +1055,7 @@ class TestSnowballBootFiles(TestCaseWithFixtures):
         filedata = 'X'
         bytes = self.snowball_config.TOC_SIZE + 1
         tmpfile = open(toc_filename, 'wb')
-        for n in xrange(bytes):
+        for n in range(bytes):
             tmpfile.write(filedata)
         tmpfile.close()
         files = self.setupFiles()
@@ -1224,7 +1224,7 @@ class TestSnowballBootFiles(TestCaseWithFixtures):
         expected = self.setupFiles()
         actual = self.snowball_config.get_file_info(
             self.tempdir, self.temp_bootdir_path)
-        self.assertEquals(expected, actual)
+        self.assertEqual(expected, actual)
 
 
 class TestBootSteps(TestCaseWithFixtures):
@@ -1790,7 +1790,7 @@ class TestFixForBug697824(TestCaseWithFixtures):
         board_conf = boards.BeagleConfig()
         board_conf.hwpack_format = HardwarepackHandler.FORMAT_1
         board_conf.set_appropriate_serial_tty(tempdir)
-        self.assertEquals('ttyS2', board_conf.serial_tty)
+        self.assertEqual('ttyS2', board_conf.serial_tty)
 
     def test_set_appropriate_serial_tty_new_kernel(self):
         tempdir = self.useFixture(CreateTempDirFixture()).tempdir
@@ -1800,7 +1800,7 @@ class TestFixForBug697824(TestCaseWithFixtures):
         board_conf = boards.BeagleConfig()
         board_conf.hwpack_format = HardwarepackHandler.FORMAT_1
         board_conf.set_appropriate_serial_tty(tempdir)
-        self.assertEquals('ttyO2', board_conf.serial_tty)
+        self.assertEqual('ttyO2', board_conf.serial_tty)
 
     def test_set_appropriate_serial_tty_three_dot_oh_kernel(self):
         tempdir = self.useFixture(CreateTempDirFixture()).tempdir
@@ -1810,7 +1810,7 @@ class TestFixForBug697824(TestCaseWithFixtures):
         board_conf = boards.BeagleConfig()
         board_conf.hwpack_format = HardwarepackHandler.FORMAT_1
         board_conf.set_appropriate_serial_tty(tempdir)
-        self.assertEquals('ttyO2', board_conf.serial_tty)
+        self.assertEqual('ttyO2', board_conf.serial_tty)
 
 
 class TestGetSfdiskCmd(TestCase):
@@ -1854,49 +1854,49 @@ class TestGetSfdiskCmd(TestCase):
     def test_smdkv310(self):
         board_conf = get_board_config('smdkv310')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_origen(self):
         board_conf = get_board_config('origen')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_origen_quad(self):
         board_conf = get_board_config('origen_quad')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_arndale(self):
         board_conf = get_board_config('arndale')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_highbank(self):
         board_conf = get_board_config('highbank')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x83,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_beaglebone(self):
         board_conf = get_board_config('beaglebone')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x0C,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_aa9(self):
         board_conf = get_board_config('aa9')
         self.set_up_config(board_conf)
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x0C,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
@@ -1975,7 +1975,7 @@ class TestGetSfdiskCmdV2(TestCase):
             board_conf.samsung_bl1_len +
             board_conf.samsung_bl2_len +
             board_conf.samsung_env_len)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
@@ -1987,7 +1987,7 @@ class TestGetSfdiskCmdV2(TestCase):
             board_conf.samsung_bl1_len +
             board_conf.samsung_bl2_len +
             board_conf.samsung_env_len)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
@@ -1999,7 +1999,7 @@ class TestGetSfdiskCmdV2(TestCase):
             board_conf.samsung_bl1_len +
             board_conf.samsung_bl2_len +
             board_conf.samsung_env_len)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
@@ -2011,28 +2011,28 @@ class TestGetSfdiskCmdV2(TestCase):
             board_conf.samsung_bl1_len +
             board_conf.samsung_bl2_len +
             board_conf.samsung_env_len)
-        self.assertEquals(
+        self.assertEqual(
             '1,8191,0xDA\n8192,106496,0x0C,*\n114688,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_highbank(self):
         board_conf = get_board_config('highbank')
         board_conf.partition_layout = 'bootfs_rootfs'
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x83,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_beaglebone(self):
         board_conf = get_board_config('beaglebone')
         board_conf.partition_layout = 'bootfs_rootfs'
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x0C,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
     def test_aa9(self):
         board_conf = get_board_config('aa9')
         board_conf.partition_layout = 'bootfs_rootfs'
-        self.assertEquals(
+        self.assertEqual(
             '63,106432,0x0C,*\n106496,,,-',
             board_conf.get_sfdisk_cmd())
 
@@ -2435,7 +2435,7 @@ class TestGetUuid(TestCaseWithFixtures):
         fixture = MockCmdRunnerPopenFixture()
         self.useFixture(fixture)
         get_uuid("/dev/rootfs")
-        self.assertEquals(
+        self.assertEqual(
             ["%s blkid -o udev -p -c /dev/null /dev/rootfs" % sudo_args],
             fixture.mock.commands_executed)
 
@@ -2445,7 +2445,7 @@ class TestGetUuid(TestCaseWithFixtures):
             "ID_FS_UUID_ENC=67d641db-ea7d-4acf-9f46-5f1f8275dce2\n"
             "ID_FS_TYPE=ext4\n")
         uuid = _parse_blkid_output(output)
-        self.assertEquals("67d641db-ea7d-4acf-9f46-5f1f8275dce2", uuid)
+        self.assertEqual("67d641db-ea7d-4acf-9f46-5f1f8275dce2", uuid)
 
 
 class TestBoards(TestCaseWithFixtures):
@@ -3123,18 +3123,16 @@ class TestPartitionSetup(TestCaseWithFixtures):
     def test_calculate_android_partition_size_and_offset(self):
         tmpfile = self._create_android_tmpfile()
         device_info = calculate_android_partition_size_and_offset(tmpfile)
-        # We use map(None, ...) since it would catch if the lists are not of
-        # equal length and zip() would not in all cases.
-        for device_pair, expected_pair in map(None, device_info,
+        self.assertEqual(len(device_info), len(self.android_snowball_offsets_and_sizes))
+        for device_pair, expected_pair in map(device_info,
                                               self.android_offsets_and_sizes):
             self.assertEqual(device_pair, expected_pair)
 
     def test_calculate_snowball_android_partition_size_and_offset(self):
         tmpfile = self._create_snowball_android_tmpfile()
         device_info = calculate_android_partition_size_and_offset(tmpfile)
-        # We use map(None, ...) since it would catch if the lists are not of
-        # equal length and zip() would not in all cases.
-        snowball_info = map(None, device_info,
+        self.assertEqual(len(device_info), len(self.android_snowball_offsets_and_sizes))
+        snowball_info = map(device_info,
                             self.android_snowball_offsets_and_sizes)
         for device_pair, expected_pair in snowball_info:
             self.assertEqual(device_pair, expected_pair)
@@ -3227,7 +3225,7 @@ class TestPartitionSetup(TestCaseWithFixtures):
         # We did not really run losetup above (as it requires root) so here we
         # don't have a device to pass to 'losetup -d', but when a device is
         # setup it is passed to the atexit handler.
-        self.assertEquals(
+        self.assertEqual(
             ['%s losetup -d ' % sudo_args,
              '%s losetup -d ' % sudo_args],
             popen_fixture.mock.commands_executed)
@@ -3255,7 +3253,7 @@ class TestPartitionSetup(TestCaseWithFixtures):
         # We did not really run losetup above (as it requires root) so here we
         # don't have a device to pass to 'losetup -d', but when a device is
         # setup it is passed to the atexit handler.
-        self.assertEquals(
+        self.assertEqual(
             ['%s losetup -d ' % sudo_args,
              '%s losetup -d ' % sudo_args,
              '%s losetup -d ' % sudo_args,
@@ -3519,24 +3517,24 @@ class TestPopulateBoot(TestCaseWithFixtures):
     def test_populate_boot_live(self):
         self.prepare_config(BoardConfig())
         self.call_populate_boot(self.config, is_live=True)
-        self.assertEquals(
+        self.assertEqual(
             self.expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args_live, self.saved_args)
+        self.assertEqual(self.expected_args_live, self.saved_args)
 
     def test_populate_boot_regular(self):
         self.prepare_config(BoardConfig())
         self.call_populate_boot(self.config)
-        self.assertEquals(
+        self.assertEqual(
             self.expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_boot_bootloader_flavor(self):
         self.prepare_config(BoardConfig())
         self.config.bootloader_flavor = "bootloader_flavor"
         self.call_populate_boot(self.config)
-        self.assertEquals(
+        self.assertEqual(
             self.expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_boot_bootloader_file_in_boot_part(self):
         self.prepare_config(BoardConfig())
@@ -3549,9 +3547,9 @@ class TestPopulateBoot(TestCaseWithFixtures):
             2,
             '%s cp -v chroot_dir/usr/lib/u-boot/bootloader_flavor/u-boot.bin '
             'boot_disk' % sudo_args)
-        self.assertEquals(
+        self.assertEqual(
             expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_boot_bootloader_file_in_boot_part_false(self):
         self.prepare_config(BoardConfig())
@@ -3559,9 +3557,9 @@ class TestPopulateBoot(TestCaseWithFixtures):
         self.config.bootloader_file_in_boot_part = False
         self.call_populate_boot(self.config)
         expected_calls = self.expected_calls[:]
-        self.assertEquals(
+        self.assertEqual(
             expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_bootloader_copy_files(self):
         self.prepare_config_v3(BoardConfig())
@@ -3579,9 +3577,9 @@ class TestPopulateBoot(TestCaseWithFixtures):
         expected_calls.insert(5,
                               '%s cp -v file2 '
                               'boot_disk/boot/grub/renamed' % sudo_args)
-        self.assertEquals(
+        self.assertEqual(
             expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_bootloader_copy_files_bootloader_set(self):
         self.prepare_config_v3(BoardConfig())
@@ -3600,9 +3598,9 @@ class TestPopulateBoot(TestCaseWithFixtures):
         expected_calls.insert(5,
                               '%s cp -v file2 '
                               'boot_disk/boot/grub/renamed' % sudo_args)
-        self.assertEquals(
+        self.assertEqual(
             expected_calls, self.popen_fixture.mock.commands_executed)
-        self.assertEquals(self.expected_args, self.saved_args)
+        self.assertEqual(self.expected_args, self.saved_args)
 
     def test_populate_boot_no_bootloader_flavor(self):
         self.prepare_config(BoardConfig())
@@ -3849,7 +3847,7 @@ class TestPopulateRootFS(TestCaseWithFixtures):
         f = open(fstab)
         contents = f.read()
         f.close()
-        self.assertEquals("\nfoo\nbar\n", contents)
+        self.assertEqual("\nfoo\nbar\n", contents)
 
 
 class TestCheckDevice(TestCaseWithFixtures):
@@ -3894,7 +3892,7 @@ class TestCheckDevice(TestCaseWithFixtures):
         self.useFixture(MockSomethingFixture(
             glob, 'glob', lambda pattern: ['/dev/sdz1', '/dev/sdz2']))
         check_device._ensure_device_partitions_not_mounted('/dev/sdz')
-        self.assertEquals(['/dev/sdz1', '/dev/sdz2'], partitions_umounted)
+        self.assertEqual(['/dev/sdz1', '/dev/sdz2'], partitions_umounted)
 
     def test_check_device_and_select(self):
         self._mock_does_device_exist_true()
@@ -3939,7 +3937,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
             "architecture: " + architecture,
             "format: 3.0"
         ])
-        print metadata
+        print(metadata)
         tar_file = tarfile.open(location, mode='w:gz')
         tarinfo = tarfile.TarInfo("metadata")
         tarinfo.size = len(metadata)
@@ -3957,39 +3955,39 @@ class TestInstallHWPack(TestCaseWithFixtures):
     def test_temporarily_overwrite_file_on_dir(self):
         fixture = self.useFixture(MockCmdRunnerPopenFixture())
         temporarily_overwrite_file_on_dir('/path/to/file', '/dir', '/tmp/dir')
-        self.assertEquals(
+        self.assertEqual(
             ['%s cp -a /path/to/file /dir' % sudo_args],
             fixture.mock.commands_executed)
 
         fixture.mock.calls = []
         run_local_atexit_funcs()
-        self.assertEquals(
+        self.assertEqual(
             ['%s rm -f /dir/file' % sudo_args],
             fixture.mock.commands_executed)
 
     def test_copy_file(self):
         fixture = self.useFixture(MockCmdRunnerPopenFixture())
         copy_file('/path/to/file', '/dir')
-        self.assertEquals(
+        self.assertEqual(
             ['%s cp /path/to/file /dir' % sudo_args],
             fixture.mock.commands_executed)
 
         fixture.mock.calls = []
         run_local_atexit_funcs()
-        self.assertEquals(
+        self.assertEqual(
             ['%s rm -f /dir/file' % sudo_args],
             fixture.mock.commands_executed)
 
     def test_mount_chroot_proc(self):
         fixture = self.useFixture(MockCmdRunnerPopenFixture())
         mount_chroot_proc('chroot')
-        self.assertEquals(
+        self.assertEqual(
             ['%s mount proc chroot/proc -t proc' % sudo_args],
             fixture.mock.commands_executed)
 
         fixture.mock.calls = []
         run_local_atexit_funcs()
-        self.assertEquals(
+        self.assertEqual(
             ['%s umount -v chroot/proc' % sudo_args],
             fixture.mock.commands_executed)
 
@@ -4010,7 +4008,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
         force_yes = False
         install_hwpack(chroot_dir, hwpack_tgz_location,
                        extract_kpkgs, force_yes, 'linaro-hwpack-install')
-        self.assertEquals(
+        self.assertEqual(
             ['%s cp %s %s' % (sudo_args, hwpack_tgz_location, chroot_dir),
              '%s %s %s linaro-hwpack-install --hwpack-version %s '
              '--hwpack-arch %s --hwpack-name %s /%s'
@@ -4021,7 +4019,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
 
         fixture.mock.calls = []
         run_local_atexit_funcs()
-        self.assertEquals(
+        self.assertEqual(
             ['%s rm -f %s/hwpack.tgz' % (sudo_args, chroot_dir)],
             fixture.mock.commands_executed)
 
@@ -4042,7 +4040,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
         force_yes = False
         install_hwpack(chroot_dir, hwpack_tgz_location,
                        extract_kpkgs, force_yes, 'linaro-hwpack-install')
-        self.assertEquals(
+        self.assertEqual(
             ['%s cp %s %s' % (sudo_args, hwpack_tgz_location, chroot_dir),
              '%s linaro-hwpack-install --hwpack-version %s '
              '--hwpack-arch %s --hwpack-name %s --extract-kernel-only %s/%s'
@@ -4052,7 +4050,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
 
         fixture.mock.calls = []
         run_local_atexit_funcs()
-        self.assertEquals(
+        self.assertEqual(
             ['%s rm -f %s/hwpack.tgz' % (sudo_args, chroot_dir)],
             fixture.mock.commands_executed)
 
@@ -4115,7 +4113,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
             hp_name2=hwpack_names[1], hp_arch=hwpack_architecture)
         expected = [
             "%s %s" % (sudo_args, line % keywords) for line in expected]
-        self.assertEquals(expected, fixture.mock.commands_executed)
+        self.assertEqual(expected, fixture.mock.commands_executed)
 
     def test_install_packages(self):
         self.useFixture(MockSomethingFixture(
@@ -4136,7 +4134,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
             chroot_dir=chroot_dir, tmp_dir=tmp_dir, chroot_args=chroot_args)
         expected = [
             "%s %s" % (sudo_args, line % keywords) for line in expected]
-        self.assertEquals(expected, fixture.mock.commands_executed)
+        self.assertEqual(expected, fixture.mock.commands_executed)
 
     def test_prepare_chroot(self):
         self.useFixture(MockSomethingFixture(
@@ -4158,7 +4156,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
             'rm -f chroot/etc/resolv.conf']
         expected = [
             "%s %s" % (sudo_args, line) for line in expected]
-        self.assertEquals(expected, fixture.mock.commands_executed)
+        self.assertEqual(expected, fixture.mock.commands_executed)
 
     def test_run_local_atexit_funcs(self):
         self.useFixture(MockSomethingFixture(
@@ -4184,7 +4182,7 @@ class TestInstallHWPack(TestCaseWithFixtures):
         # by one of the functions.
         chroot_utils = linaro_image_tools.media_create.chroot_utils
         self.assertRaises(TestException, chroot_utils.run_local_atexit_funcs)
-        self.assertEquals(
+        self.assertEqual(
             ['raising_func', 'behaving_func'], self.call_order)
 
     def test_hwpack_atexit(self):

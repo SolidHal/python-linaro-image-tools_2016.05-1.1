@@ -24,7 +24,7 @@ import sys
 import logging
 import tempfile
 import tarfile
-from StringIO import StringIO
+from io import StringIO
 
 from linaro_image_tools import cmd_runner, utils
 from linaro_image_tools.testing import TestCaseWithFixtures
@@ -233,7 +233,7 @@ class TestFindCommand(TestCaseWithFixtures):
         path = os.path.join(tempdir, lmc)
         open(path, 'w').close()
         os.chmod(path, stat.S_IXUSR)
-        self.assertEquals(path, find_command(lmc, tempdir))
+        self.assertEqual(path, find_command(lmc, tempdir))
 
     def test_existing_command(self):
         lmc = 'linaro-media-create'
@@ -245,10 +245,10 @@ class TestFindCommand(TestCaseWithFixtures):
             expected = expected.strip()
         else:
             expected = os.path.join(prefer_dir, lmc)
-        self.assertEquals(expected, find_command(lmc))
+        self.assertEqual(expected, find_command(lmc))
 
     def test_nonexisting_command(self):
-        self.assertEquals(find_command('linaro-moo'), None)
+        self.assertEqual(find_command('linaro-moo'), None)
 
 
 class TestInstallPackageProviding(TestCaseWithFixtures):

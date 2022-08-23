@@ -27,7 +27,7 @@ import shutil
 from string import Template
 import subprocess
 import tempfile
-import urlparse
+import urllib.parse
 
 from apt.cache import Cache
 from apt.cache import FetchFailedException
@@ -236,7 +236,7 @@ Description: Dummy package to install a hwpack
         os.mkdir(packaging_dir)
         os.mkdir(os.path.join(packaging_dir, 'DEBIAN'))
         relationship_strs = []
-        for relationship_name, relationship_value in relationships.items():
+        for relationship_name, relationship_value in list(relationships.items()):
             relationship_strs.append(
                 '%s: %s\n' % (relationship_name, relationship_value))
         subst_vars = dict(
@@ -530,7 +530,7 @@ class IsolatedAptCache(object):
                 if re.search("file:/[^/]", source):
                     mangled_source = re.sub("file:/", "file://", source)
 
-                url_parsed = urlparse.urlsplit(mangled_source)
+                url_parsed = urllib.parse.urlsplit(mangled_source)
 
                 # If the source uses authentication, don't put in sources.list
                 if url_parsed.password:
@@ -548,7 +548,7 @@ class IsolatedAptCache(object):
                             "login " + url_parsed.username + "\n" +
                             "password " + url_parsed.password + "\n")
 
-                    source = urlparse.urlunsplit(url_parts_without_user_pass)
+                    source = urllib.parse.urlunsplit(url_parts_without_user_pass)
 
                     # Get rid of extra / in file URLs
                     source = re.sub("file://", "file:/", source)
@@ -580,7 +580,7 @@ class IsolatedAptCache(object):
         logger.debug("Updating apt cache")
         try:
             self.cache.update()
-        except FetchFailedException, e:
+        except FetchFailedException as e:
             obfuscated_e = re.sub(r"([^ ]https://).+?(@)", r"\1***\2", str(e))
             raise FetchFailedException(obfuscated_e)
         self.cache.open()
@@ -773,7 +773,7 @@ class PackageFetcher(object):
         self._filter_ignored(fetched)
         if not download_content:
             self.cache.cache.clear()
-            return fetched.values()
+            return list(fetched.values())
         acq = apt_pkg.Acquire(DummyProgress())
         acqfiles = []
         # re to remove the repo private key
@@ -809,4 +809,4 @@ class PackageFetcher(object):
                     (acqfile.destfile, acqfile.error_text))
             result_package.content = open(destfile)
             result_package._file_path = destfile
-        return fetched.values()
+        return list(fetched.values())

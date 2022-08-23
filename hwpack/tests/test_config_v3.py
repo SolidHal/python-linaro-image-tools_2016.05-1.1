@@ -20,7 +20,7 @@
 # USA.
 
 import re
-from StringIO import StringIO
+from io import StringIO
 from testtools import TestCase
 
 from linaro_image_tools.hwpack.config import Config, HwpackConfigError

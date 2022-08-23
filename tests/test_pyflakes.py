@@ -28,5 +28,5 @@ class TestPyflakes(TestCase):
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         (stdout, stderr) = proc.communicate()
-        self.assertEquals('', stdout)
-        self.assertEquals('', stderr)
+        self.assertEqual('', stdout)
+        self.assertEqual('', stderr)

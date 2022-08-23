@@ -125,9 +125,9 @@ def install_hwpack(rootfs_dir, hwpack_file, extract_kpkgs, hwpack_force_yes,
     """
     hwpack_basename = os.path.basename(hwpack_file)
     copy_file(hwpack_file, rootfs_dir)
-    print "-" * 60
-    print "Installing (linaro-hwpack-install) %s in target rootfs." % (
-        hwpack_basename)
+    print("-" * 60)
+    print("Installing (linaro-hwpack-install) %s in target rootfs." % (
+        hwpack_basename))
 
     # Get information required by linaro-hwpack-install
     with HardwarepackHandler([hwpack_file]) as hwpack:
@@ -151,7 +151,7 @@ def install_hwpack(rootfs_dir, hwpack_file, extract_kpkgs, hwpack_force_yes,
         chroot_dir = rootfs_dir
 
     cmd_runner.run(args, as_root=True, chroot=chroot_dir).wait()
-    print "-" * 60
+    print("-" * 60)
 
 
 def install_packages(chroot_dir, tmp_dir, *packages):
@@ -164,14 +164,14 @@ def install_packages(chroot_dir, tmp_dir, *packages):
         # TODO: Use the partition_mounted() contextmanager here and get rid of
         # mount_chroot_proc() altogether.
         mount_chroot_proc(chroot_dir)
-        print "-" * 60
-        print "Installing (apt-get) %s in target rootfs." % " ".join(packages)
+        print("-" * 60)
+        print("Installing (apt-get) %s in target rootfs." % " ".join(packages))
         args = ("apt-get", "--yes", "install") + packages
         cmd_runner.run(args, as_root=True, chroot=chroot_dir).wait()
-        print "Cleaning up downloaded packages."
+        print("Cleaning up downloaded packages.")
         args = ("apt-get", "clean")
         cmd_runner.run(args, as_root=True, chroot=chroot_dir).wait()
-        print "-" * 60
+        print("-" * 60)
     finally:
         run_local_atexit_funcs()
 
@@ -246,9 +246,9 @@ def run_local_atexit_funcs():
             exc_info = sys.exc_info()
         except:
             import traceback
-            print >> sys.stderr, "Error in local_atexit:"
+            print("Error in local_atexit:", file=sys.stderr)
             traceback.print_exc()
             exc_info = sys.exc_info()
 
     if exc_info is not None:
-        raise exc_info[0], exc_info[1], exc_info[2]
+        raise exc_info[0](exc_info[1]).with_traceback(exc_info[2])

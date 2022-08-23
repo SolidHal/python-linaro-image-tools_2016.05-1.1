@@ -141,11 +141,11 @@ class AndroidBoardConfig(BoardConfig):
                 config = yaml.safe_load(hw)
             self._set_attributes(config)
             return config
-        except yaml.YAMLError, ex:
+        except yaml.YAMLError as ex:
             logger.debug("Error loading YAML file %s" % hwpack, ex)
             raise BoardConfigException("Error reading Android hwpack %s"
                                        % hwpack)
-        except IOError, ex:
+        except IOError as ex:
             logger.debug("Error reading hwpack file %s" % hwpack, ex)
             raise BoardConfigException("Android hwpack %s could not be found"
                                        % hwpack)
@@ -156,7 +156,7 @@ class AndroidBoardConfig(BoardConfig):
 
         :param config: The config read from the Android hwpack.
         """
-        for name, value in config.iteritems():
+        for name, value in config.items():
             if name == FORMAT_FIELD:
                 setattr(self, 'hwpack_format', value)
             elif hasattr(self, name):

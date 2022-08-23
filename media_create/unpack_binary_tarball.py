@@ -39,11 +39,11 @@ def unpack_android_binary_tarball(tarball, unpack_dir, as_root=True):
         index = line.find(selinux_warn1)
         index2 = line.find(selinux_warn2)
         if index == -1 and index2 == -1:
-            print line
+            print(line)
             continue
         elif not selinux_warn_outputted:
             # either index != -1 or index2 != -1
-            print line
+            print(line)
             print ("WARNING: selinux will not work correctly since the\n"
                    "         --selinux option of tar command in this OS\n"
                    "         is not fully supported\n")
